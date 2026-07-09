@@ -24,7 +24,7 @@ class PaginatedApiResponse(BaseModel, Generic[T]):
     data: list[T]
     pagination: Pagination
 
-def paginate(items: list[T], total_items: int, skip: int, limit: int, message: str = "Retrieved successfully") -> PaginatedApiResponse[T]:
+def paginate(items: list[T], total_items: int, skip: int=0, limit: int=0, message: str = "Retrieved successfully") -> PaginatedApiResponse[T]:
     current_page = (skip // limit) + 1 if limit > 0 else 1
     total_pages = math.ceil(total_items / limit) if limit > 0 else 1
     
