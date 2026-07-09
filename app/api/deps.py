@@ -12,7 +12,7 @@ from app.schemas.token import TokenPayload
 from app.crud.crud_user import user as user_crud
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/auth/login"
+    tokenUrl=f"{settings.API_V1_STR}/auth/swagger-login"
 )
 
 def get_db() -> Generator:
