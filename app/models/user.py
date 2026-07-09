@@ -17,3 +17,4 @@ class User(Base):
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
     access_token: Mapped[str] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

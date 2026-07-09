@@ -21,7 +21,7 @@ def create_user(user_in: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=PaginatedApiResponse[UserOut])
-def list_users(skip: int, limit: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+def list_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     total_items = user_crud.count(db)
     users = user_crud.get_multi(db, skip=skip, limit=limit)
     return paginate(
