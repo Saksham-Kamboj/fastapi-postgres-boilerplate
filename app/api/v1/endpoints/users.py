@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db
+from app.api.deps import get_db, get_current_active_user
+from app.models.user import User
 from app.crud.crud_user import user as user_crud
 from app.schemas.user import UserCreate, UserOut, UserUpdate
 from app.schemas.response import ApiResponse, PaginatedApiResponse, paginate
@@ -19,7 +20,7 @@ def create_user(user_in: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=PaginatedApiResponse[UserOut])
-def list_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def list_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     total_items = user_crud.count(db)
     users = user_crud.get_multi(db, skip=skip, limit=limit)
     return paginate(
@@ -32,7 +33,7 @@ def list_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
 
 
 @router.get("/{user_id}", response_model=ApiResponse[UserOut])
-def get_user(user_id: int, db: Session = Depends(get_db)):
+def get_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     db_user = user_crud.get(db, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -40,7 +41,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{user_id}", response_model=ApiResponse[UserOut])
-def update_user(user_id: int, user_in: UserUpdate, db: Session = Depends(get_db)):
+def update_user(user_id: int, user_in: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     db_user = user_crud.get(db, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -49,7 +50,7 @@ def update_user(user_id: int, user_in: UserUpdate, db: Session = Depends(get_db)
 
 
 @router.delete("/{user_id}", response_model=ApiResponse[None])
-def delete_user(user_id: int, db: Session = Depends(get_db)):
+def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     db_user = user_crud.remove(db, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
