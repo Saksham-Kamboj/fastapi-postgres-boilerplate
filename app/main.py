@@ -21,9 +21,16 @@ async def global_exception_handler(request: Request, exc: Exception):
     print(f"\033[91m{exc.__class__.__name__}: {str(exc)}\033[0m")
     print(f"\033[91m===========================================================\033[0m\n")
     
+    import re
+    # Some database libraries use literal '\n' characters instead of real newlines in their error strings
+    short_error = re.split(r'\\n|\n|\r', str(exc))[0]
+    
+    if len(short_error) > 200:
+        short_error = short_error[:197] + "..."
+    
     return JSONResponse(
         status_code=500,
-        content=ApiResponse(success=False, message=str(exc)).model_dump()
+        content=ApiResponse(success=False, message=short_error).model_dump()
     )
 
 @app.exception_handler(StarletteHTTPException)
