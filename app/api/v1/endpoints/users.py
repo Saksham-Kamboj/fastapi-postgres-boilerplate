@@ -1,3 +1,4 @@
+import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -33,7 +34,7 @@ def list_users(skip: int, limit: int, db: Session = Depends(get_db), current_use
 
 
 @router.get("/{user_id}", response_model=ApiResponse[UserOut])
-def get_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+def get_user(user_id: uuid.UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     db_user = user_crud.get(db, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -41,7 +42,7 @@ def get_user(user_id: int, db: Session = Depends(get_db), current_user: User = D
 
 
 @router.put("/{user_id}", response_model=ApiResponse[UserOut])
-def update_user(user_id: int, user_in: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+def update_user(user_id: uuid.UUID, user_in: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     db_user = user_crud.get(db, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -50,7 +51,7 @@ def update_user(user_id: int, user_in: UserUpdate, db: Session = Depends(get_db)
 
 
 @router.delete("/{user_id}", response_model=ApiResponse[None])
-def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+def delete_user(user_id: uuid.UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     db_user = user_crud.remove(db, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
