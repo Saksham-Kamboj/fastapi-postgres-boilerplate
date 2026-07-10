@@ -28,8 +28,9 @@ app/
 │       └── endpoints/
 │           ├── health.py      # GET /health
 │           └── users.py       # User CRUD endpoints
-alembic/                       # DB migrations
 tests/                         # Pytest test cases
+├── utils/                     # Reusable utility functions and helper modules
+alembic/                       # Database migration configurations and scripts
 ```
 
 ## Setup
