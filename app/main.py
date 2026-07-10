@@ -62,4 +62,4 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 def root():
-    return {"message": f"{settings.PROJECT_NAME} is running"}
+    return {"status": "ok", "message": f"{settings.PROJECT_NAME} is running"}
